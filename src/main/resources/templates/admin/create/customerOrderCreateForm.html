@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Admin - Add Customer Order')}"></head>
+<body data-bs-theme="dark">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/header :: sidebar}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container justify-content-center align-content-center ">
+                        <div class="row">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                <h1>Add New Customer Order</h1>
+                            </div>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                        <form th:action="@{/admin/orders/customer/create}" method="post" th:object="${customerOrder}">
+                            <div class="mb-3">
+                                <label for="customer" class="form-label">Customer</label>
+                                <select name="customerId" class="form-select" id="customerId">
+                                    <option th:each="cust : ${customers}" th:value="${cust.emailId}" th:text="${cust.firstName} + ' ' + ${cust.lastName}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="orderDate" class="form-label">Order Date</label>
+                                <input type="date" class="form-control" id="orderDate" th:field="*{dateOfOrder}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="paymentMethod" class="form-label">Payment Method</label>
+                                <select class="form-select" id="paymentMethod" th:field="*{paymentMethod}">
+                                    <option value="CASH">CASH</option>
+                                    <option value="CARD">CARD</option>
+                                    <option value="UPI">UPI</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="processorEmployee" class="form-label">Processed by Employee</label>
+                                <select name="employeeId" class="form-select" id="employeeId">
+                                    <option th:each="emp : ${employees}" th:value="${emp.employeeId}" th:text="${emp.firstName} + ' ' + ${emp.lastName}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Products</label>
+                                <div id="productList">
+                                    <div th:each="productPair : ${customerOrder.products}">
+                                        <div class="input-group mb-2 align-items-center justify-content-center">
+                                            <select class="form-select" name="productIds">
+                                                <option th:each="prod : ${products}" th:value="${prod.productId}" th:text="${prod.productName}"
+                                                        th:selected="${prod.productId == productPair.getfirst().productId}"
+                                                ></option>
+                                            </select>
+                                            <input type="number" class="form-control" placeholder="Quantity" name="quantities" th:value="${productPair.getsecond()}">
+                                            <i class="bi bi-x-circle-fill text-danger ms-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary" id="addProduct">Add Product</button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">Create Customer Order</button>
+                                <h4 class="text-success" id="amount"></h4>
+                            </div>
+                        </form>
+                    </div>
+            </main>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const products = /*[[${products}]]*/ [];
+        console.log(products);
+        
+        var amount = 0;
+        function addProductField() {
+
+
+            // JavaScript to dynamically add product and quantity fields
+            const productList = document.getElementById('productList');
+            const index = productList.childElementCount;
+            const productField = document.createElement('div');
+            productField.className = 'input-group mb-2 align-items-center justify-content-center';
+    
+            const productSelect = document.createElement('select');
+            productSelect.className = 'form-select';
+            productSelect.name = 'productIds';
+            productSelect.required = true;
+            productSelect.innerHTML = '<option value="">Select Product</option>';
+
+
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.productId;
+                option.text = product.productName;
+                productSelect.appendChild(option);
+            });
+            productField.appendChild(productSelect);
+
+            const quantityInput = document.createElement('input');
+
+            quantityInput.type = 'number';
+            quantityInput.className = 'form-control';
+            quantityInput.name = 'quantities';
+            quantityInput.placeholder = 'Quantity';
+            quantityInput.required = true;
+            productField.appendChild(quantityInput);
+
+            const crossButton = document.createElement('i');
+            crossButton.className = 'bi bi-x-circle-fill text-danger ms-1';
+            crossButton.addEventListener('click', function() {
+                productField.remove();
+            });
+            productField.appendChild(crossButton);
+
+            productList.appendChild(productField);
+
+            productSelect.addEventListener('change', function() {
+                // set quantity max and min
+                const selectedProduct = products.find(product => product.productId == productSelect.value);
+                quantityInput.addEventListener('input', function() {
+                    const allProducts = document.querySelectorAll('select[name="productIds"]');
+                    const allQuantities = document.querySelectorAll('input[name="quantities"]');
+                    amount = 0;
+                    allProducts.forEach((product, index) => {
+                        const selectedProduct = products.find(prod => prod.productId == product.value);
+                        amount += selectedProduct.maximumRetailPrice * allQuantities[index].value;
+                    });
+                    document.getElementById('amount').innerText = 'Amount: ₹' + amount.toFixed(2);
+                });
+            });
+        }
+
+        document.getElementById('addProduct').addEventListener('click', addProductField);
+        /*]]>*/
+    </script>
+
+
+
+
+</body>
+</html>;

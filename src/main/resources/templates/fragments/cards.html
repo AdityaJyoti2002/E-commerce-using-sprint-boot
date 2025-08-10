@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div th:fragment="product_card" class="card bg-body-tertiary" style="width: 18rem; height: 32rem; position: relative;">
+        <!-- Yellow Banner for Discount -->
+        <div th:if="${sellingPrice != null and maximumRetailPrice != null}" 
+             th:text="${#numbers.formatDecimal(((maximumRetailPrice - sellingPrice) / maximumRetailPrice) * 100, 0, 0)} + '% Off'"
+             class="discount-banner" 
+             style="top: 0; left: 0; right: 0; background-color: rgb(255, 238, 0); text-align: center; font-weight: bold; padding: 5px 0; color: black;"></div>
+
+        <!-- Product Image -->
+        <img th:if="${imageUrl != null}" th:src="@{|/${imageUrl}|}" class="card-img-top" alt="..." style="height: 20rem;">
+        
+        <!-- Product Details -->
+        <div class="card-body justify-content-between">
+            <h5 class="card-title" th:text="${productName}"></h5>
+
+            <div class="d-flex justify-content-between fs-5 fw-bold">
+                <p class="card-text" th:text="'₹' + ${sellingPrice}" style="color: rgb(255, 123, 0);"></p>    
+
+<p class="text-decoration-line-through text-secondary" th:text="'₹' + ${maximumRetailPrice}"></p>
+
+            </div>
+            <a th:href="@{/product/{id}(id=${productId})}" class="btn btn-dark">View Product</a> <!-- Changed button color to black -->
+        </div>
+    </div>
+
+    <div class="m-5" th:fragment="jumbotron">
+        <div class="p-5 text-center bg-body-tertiary">
+            <div class="container py-5">
+                <h1 class="text-body-emphasis" th:text="${category.categoryName}"></h1>
+                <p class="col-lg-8 mx-auto lead" th:text="${category.categoryDescription}"></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

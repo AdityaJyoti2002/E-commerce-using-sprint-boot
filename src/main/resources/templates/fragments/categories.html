@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- Create a collage of cards that have a picture of a product of that category and a cathphrase and then link to filtered results -->
+    <div th:fragment="collage" class="d-flex flex-row justify-content-evenly">
+        <div class="mh-50">
+            <div class="h-100 d-flex flex-column gap-4">
+                <section>
+                    <div class="card">
+                        <img src="/assets/1.jpg" width = "300" height = "400" class="card-img-top w-100" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-white" th:text="${categories[0].categoryDescription}"></h3>
+                            <h5 class="text-white"  th:text="${categories[0].categoryName}"></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[0].categoryId})}" class="text-decoration-underline text-white">Shop Tech</a>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <img src="/assets/3.jpg" width = "500" height = "300" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-white" th:text="${categories[1].categoryDescription}"></h3>
+                            <h5 class="text-white"  th:text="${categories[1].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[1].categoryId})}" class="text-decoration-underline text-white">Get Furnitures</a>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <img src="/assets/12.avif" width = "300" height = "270" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[2].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[2].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[2].categoryId})}" class="text-decoration-underline text-black">Shop Fashion</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="mh-50">
+            <div class="h-100 d-flex flex-column gap-4">
+                <section>
+                    <div class="card">
+                        <img src="/assets/4_cropped.jpg" width = "600" height = "270" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[3].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[3].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[3].categoryId})}" class="text-decoration-underline text-black">Get your next read</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="d-flex gap-1">
+                    <div class="card">
+                        <img src="/assets/gr.jpg" width = "300" height = "300" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[4].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[4].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[4].categoryId})}" class="text-decoration-underline text-black">Shop Groceries</a>
+                        </div>
+                    </div>
+                   
+                    <div class="card">
+                        <img src="/assets/8.webp" width = "300" height = "300" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[5].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[5].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[5].categoryId})}" class="text-decoration-underline text-black">Shop Now</a>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <img src="/assets/11.png" width = "600" height = "300" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[6].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[6].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[6].categoryId})}" class="text-decoration-underline text-black">Shop Now</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="mh-50">
+            <div class="h-100 d-flex flex-column gap-4">
+                <section>
+                    <div class="card">
+                        <img src="/assets/2.avif" width = "300" height = "200" class="card-img-top w-100" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[7].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[7].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[7].categoryId})}" class="text-decoration-underline text-black">Shop Now</a>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <img src="/assets/10.webp" width = "300" height = "200"  class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[8].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[8].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[8].categoryId})}" class="text-decoration-underline text-black">Shop Now</a>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="card">
+                        <img src="/assets/6.jpg" width = "300" height = "500" class="card-img-top" alt="...">
+                        <div class="card-img-overlay">
+                            <h3 class="card-title text-black" th:text="${categories[9].categoryDescription}"></h3>
+                            <h5 class="text-black"  th:text="${categories[9].categoryName}" ></h5>
+                            <a th:href="@{/category/{id}/products(id=${categories[9].categoryId})}" class="text-decoration-underline text-white">Shop Now</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

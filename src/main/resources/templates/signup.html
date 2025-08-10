@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Sign Up')}"></head>
+<body data-bs-theme="dark">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Sign Up</h4>
+                    </div>
+                    <div th:if="${error}" class="alert alert-danger" role="alert">
+                        <p th:text="${error}"></p>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/signup}" method="post" th:object="${customer}">
+                            <div class="mb-3">
+                                <label for="emailId" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailId" th:field="*{emailId}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">GetFirst() Name</label>
+                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="shippingAddress" class="form-label">Shipping Address</label>
+                                <input type="text" class="form-control" id="shippingAddress" th:field="*{shippingAddress}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="billingAddress" class="form-label">Billing Address</label>
+                                <input type="text" class="form-control" id="billingAddress" th:field="*{billingAddress}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input name="password" type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        </form>
+
+                        <script>
+                            var password = document.getElementById("password")
+                            var confirmPassword = document.getElementById("confirmPassword");
+
+                            function validatePassword() {
+                                if (password.value != confirmPassword.value) {
+                                    confirmPassword.setCustomValidity("Passwords Don't Match");
+                                } else {
+                                    confirmPassword.setCustomValidity('');
+                                }
+                            }
+
+                            password.onchange = validatePassword;
+                            confirmPassword.onkeyup = validatePassword;
+                        </script>
+                            
+    
+</body>
+</html>

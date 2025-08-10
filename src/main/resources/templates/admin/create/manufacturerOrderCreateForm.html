@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Admin - Add Customer Order')}"></head>
+<body data-bs-theme="dark">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/header :: sidebar}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container justify-content-center align-content-center ">
+                        <div class="row">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                <h1 th:text="${manufacturerOrder.manufacturer == null ? 'Add New Manufacturer Order' : 'Restock on ' + manufacturerOrder.products[0].getfirst().productName}"></h1>
+                            </div>
+                        </div>
+                        <form th:action="@{/admin/orders/manufacturer/create}" method="post" th:object="${manufacturerOrder}">
+                            <div class="mb-3">
+                                <label for="manufacturerId" class="form-label">Manufacturer</label>
+                                <select name="manufacturerId" class="form-select" id="manufacturerId">
+                                    <option th:each="man : ${manufacturers}" th:value="${man.manufacturerId}" th:text="${man.manufacturerName}"
+                                        th:selected="${manufacturerOrder.manufacturer == null ? false : man.manufacturerId == manufacturerOrder.manufacturer.manufacturerId}"></option>
+                                    ></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="orderDate" class="form-label">Order Date</label>
+                                <input type="date" class="form-control" id="orderDate" th:field="*{dateOfOrder}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="processedByEmployee" class="form-label">Processed by Employee</label>
+                                <select name="employeeId" class="form-select" id="employeeId">
+                                    <option th:each="emp : ${employees}" th:value="${emp.employeeId}" th:text="${emp.firstName} + ' ' + ${emp.lastName}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Products</label>
+                                <div id="productList">
+                                    <div th:each="productPair : ${manufacturerOrder.products}">
+                                        <div class="input-group mb-2 align-items-center justify-content-center">
+                                            <select class="form-select" name="productIds">
+                                                <option th:each="prod : ${products}" th:value="${prod.productId}" th:text="${prod.productName}"
+                                                        th:selected="${prod.productId == productPair.getfirst().productId}"
+                                                ></option>
+                                            </select>
+                                            <input type="number" class="form-control" placeholder="Quantity" name="quantities" th:value="${productPair.getsecond()}">
+                                            <i class="bi bi-x-circle-fill text-danger ms-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary" id="addProduct">Add Product</button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">Create Manufacturer Order</button>
+                                <h4 class="text-success" id="amount"></h4>
+                            </div>
+                        </form>
+                    </div>
+            </main>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const products = /*[[${products}]]*/ []; // Assumes 'products' includes manufacturer IDs for each product
+    
+        let amount = 0;
+        function filterProductsByManufacturer(manufacturerId) {            
+            return products.filter(product => product.manufacturers.some(man => man.getfirst().manufacturerId == manufacturerId));
+        }
+    
+        function addProductField(manufacturerId) {
+            // Filter products based on the selected manufacturer
+            const filteredProducts = filterProductsByManufacturer(manufacturerId);
+            
+            const productList = document.getElementById('productList');
+            const productField = document.createElement('div');
+            productField.className = 'input-group mb-2 align-items-center justify-content-center';
+            
+            const productSelect = document.createElement('select');
+            productSelect.className = 'form-select';
+            productSelect.name = 'productIds';
+            productSelect.required = true;
+            productSelect.innerHTML = '<option value="">Select Product</option>';
+    
+            // Populate product options based on filtered list
+            filteredProducts.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.productId;
+                option.text = product.productName;
+                productSelect.appendChild(option);
+            });
+            productField.appendChild(productSelect);
+    
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.className = 'form-control';
+            quantityInput.name = 'quantities';
+            quantityInput.placeholder = 'Quantity';
+            quantityInput.required = true;
+            productField.appendChild(quantityInput);
+    
+            const crossButton = document.createElement('i');
+            crossButton.className = 'bi bi-x-circle-fill text-danger ms-1';
+            crossButton.addEventListener('click', function() {
+                productField.remove();
+                calculateTotal();
+            });
+            productField.appendChild(crossButton);
+    
+            productList.appendChild(productField);
+    
+            // Update total amount on quantity change
+            quantityInput.addEventListener('input', calculateTotal);
+        }
+    
+        function calculateTotal() {
+            const allProducts = document.querySelectorAll('select[name="productIds"]');
+            const allQuantities = document.querySelectorAll('input[name="quantities"]');
+            amount = 0;
+            
+            allProducts.forEach((product, index) => {
+                const selectedProduct = products.find(prod => prod.productId == product.value);
+                if (selectedProduct) {
+                    amount += selectedProduct.manufacturers.find(man => man.getfirst().manufacturerId == document.getElementById('manufacturerId').value).getsecond() * allQuantities[index].value;
+                }
+            });
+            document.getElementById('amount').innerText = 'Amount: ₹' + amount.toFixed(2);
+        }
+    
+        document.getElementById('addProduct').addEventListener('click', function() {
+            const manufacturerId = document.getElementById('manufacturerId').value;
+            if (manufacturerId) {
+                addProductField(manufacturerId);
+            } else {
+                alert("Please select a manufacturer getfirst().");
+            }
+        });
+    
+        document.getElementById('manufacturerId').addEventListener('change', function() {
+            document.getElementById('productList').innerHTML = ""; // Clear previous product fields
+            document.getElementById('amount').innerText = "Amount: ₹0.00"; // Reset amount display
+            amount = 0;
+        });
+
+        document.querySelectorAll("input[name='quantities']").forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+
+        calculateTotal();
+
+        /*]]>*/
+    </script>
+    
+
+
+
+
+</body>
+</html>;

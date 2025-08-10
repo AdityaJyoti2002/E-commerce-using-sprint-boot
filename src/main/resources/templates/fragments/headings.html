@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- A bullet heading with a cyllindrical bullet -->
+    <div th:fragment="bulletHeading" class="m-4 d-flex gap-lg-1">
+        <div style="width: 8px; height: 40px;" class="bg-primary rounded-4">
+        </div>
+        <h2 th:text="${heading}" class="d-inline-block ms-2"></h2>
+    </div>
+</body>
+</html>

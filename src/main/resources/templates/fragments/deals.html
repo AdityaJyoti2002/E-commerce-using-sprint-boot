@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="deals" class="carousel carousel-dark slide m-4" id="dealsCarousel">
+    <div class="carousel-inner">
+        <div th:each="group, stat : ${dealGroups}"
+             th:classappend="${stat.index == 0} ? 'active'" class="carousel-item">
+            <div class="d-flex flex-row gap-2 justify-content-evenly">
+                <div th:each="product : ${group}" 
+                     th:insert="~{fragments/cards :: product_card}"
+                     th:with="productName=${product.productName},
+                              sellingPrice=${product.sellingPrice},
+                              maximumRetailPrice=${product.maximumRetailPrice},
+                              productId=${product.productId},
+                              imageUrl=${product.imageUrl}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-bs-theme="dark">
+        <button style="height: fit-content; width: fit-content;" class="carousel-control-prev align-self-center"
+                type="button" data-bs-target="#dealsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button style="height: fit-content; width: fit-content;" class="carousel-control-next align-self-center"
+                type="button" data-bs-target="#dealsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+</body>
+</html>

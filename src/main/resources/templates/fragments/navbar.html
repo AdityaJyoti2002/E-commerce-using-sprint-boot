@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">    
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+    <div th:fragment="navbar">
+        <header class="py-4 px-5 mb-3 border-bottom bg-body-tertiary">
+            <div class="container-fluid d-flex align-items-center gap-5 justify-content-evenly px-5">
+              
+                <a href="/" class="d-block text-decoration-none text-light">
+                    <h3>
+                      W-Inv
+                    </h3>
+                </a>
+        
+              
+                <form class="w-50" role="search" action="/search" method="get">
+                  <input type="search" name="query" id="search" class="form-control rounded-4" placeholder="Search..." aria-label="Search">
+                </form>
+        
+                <!-- If user is authentication, display links for Orders, Profile and Logout else display links for Login and Register -->
+                <div sec:authorize="isAuthenticated()" class="d-flex gap-2">
+                  <a href="/cart" class="text-light text-decoration-none">
+                    <i class="bi bi-cart"></i>
+                    Cart
+                  </a>
+                  <a href="/orders" class="text-light text-decoration-none">
+                    <i class="bi bi-bag-check-fill"></i>
+                    Orders
+                  </a>
+                  <a href="/profile" class="text-light text-decoration-none">
+                    <i class="bi bi-person-circle"></i>
+                    Profile
+                  </a>
+                  <a style="cursor: pointer;" class="text-light text-decoration-none" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-power"></i>  
+                    Logout
+                  </a>
+                </div>
+                <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+                  <a href="/login" class="text-light text-decoration-none">
+                    <i class="bi bi-box-arrow-in-right"></i>  
+                    Login
+                  </a>
+                  <a href="/signup" class="text-light text-decoration-none">
+                    <i class="bi bi-person-plus-fill"></i>
+                    Register
+                  </a>
+                </div>
+                <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                  <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                </form>
+              </div>
+          </header>
+    </div>
+
+    <div th:fragment="footer">
+        <div class="container">
+            <footer class="py-3 my-4 border-top">
+              <p class="text-center text-body-secondary">© 2024 JDBC INVENTORY</p>
+            </footer>
+          </div>
+    </div>
+</body>
+</html>

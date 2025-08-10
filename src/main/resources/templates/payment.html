@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Payment')}"></head>
+<body data-bs-theme="dark">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container mt-5 justify-content-center align-items-center">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Complete Payment</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5>Total Amount: ₹<span th:text="${totalAmount}"></span></h5>
+                        <form id="razorpay-form" action="/razorpay/payment" method="POST">
+                            <input type="hidden" name="razorpay_order_id" th:value="${razorpayOrderId}">
+                            <input type="hidden" name="totalAmount" th:value="${totalAmount}">
+                            <input type="hidden" name="paymentMethod" th:value="${paymentMethod}">
+                            
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                            
+                            <button type="button" id="razorpay-button" class="btn btn-success">Pay Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Razorpay Checkout script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('razorpay-button').onclick = function(e) {
+            var options = {
+                "key": "[[${razorpayKeyId}]]", // Razorpay key from the model
+                "amount": (document.querySelector('[name="totalAmount"]').value * 100), // Convert to paise
+                "currency": "INR",
+                "order_id": document.querySelector('[name="razorpay_order_id"]').value,
+                "handler": function (response) {
+                    // Send payment details to server
+                    fetch("/razorpay/saveOrder", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('[name="_csrf"]').value // CSRF token
+                        },
+                        body: JSON.stringify({
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpayOrderId: response.razorpay_order_id,
+                            totalAmount: document.querySelector('[name="totalAmount"]').value,
+                            paymentMethod: document.querySelector('[name="paymentMethod"]').value
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Order created successfully!");
+                            // Redirect to a success page or order summary
+                            window.location.href = "/orders";
+                        } else {
+                            alert("Failed to create order. Please try again.");
+                        }
+                    }).catch(error => console.error("Error:", error));
+                },
+                "prefill": {
+                    "name": "Customer Name",
+                    "email": "customer@example.com"
+                },
+                "theme": {
+                    "color": "#F37254"
+                }
+            };
+    
+            var rzp = new Razorpay(options);
+            rzp.open();
+            e.preventDefault();
+        };
+    </script>
+    
+</body>
+</html>

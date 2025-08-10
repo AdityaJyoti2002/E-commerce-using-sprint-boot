@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Admin - Add Employee')}"></head>
+<body data-bs-theme="dark">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/header :: sidebar}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container justify-content-center align-content-center ">
+                        <div class="row">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                <h1>Add New Employee</h1>
+                            </div>
+                        </div>
+                        <form th:action="@{/admin/employees/create}" method="post" th:object="${employee}">
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">GetFirst() Name</label>
+                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" name="firstName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" name="lastName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" th:field="*{phoneNumber}" name="phoneNumber" required pattern="[0-9]{10}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="hireDate" class="form-label">Hire Date</label>
+                                <input type="date" class="form-control" th:field="*{hireDate}" name="hireDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="designation" class="form-label">Designation</label>
+                                <input type="text" class="form-control" th:field="*{designation}" name="designation" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emails" class="form-label">Emails</label>
+                                <div id="emails">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="email" class="form-control" th:field="*{emailAddresses}" name="emails" required>
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary mt-1" id="addEmail">Add Email</button>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Employee</button>
+                        </form>
+                    </div>
+            </main>
+
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                document.getElementById('addEmail').addEventListener('click', function() {
+                    var emails = document.getElementById('emails');
+                    var email = document.createElement('div');
+                    email.className = 'd-flex gap-2 align-items-center';
+                    var input = document.createElement('input');
+                    input.type = 'email';
+                    input.className = 'form-control';
+                    input.name = 'emailAddresses';
+                    email.append(input);
+                    var icon = document.createElement('i');
+                    icon.className = 'bi bi-x-circle-fill text-danger';
+                    email.append(icon);
+                    emails.append(email);
+                });
+
+                document.querySelectorAll('.bi-x-circle-fill').forEach(icon => {
+                    icon.addEventListener('click', function() {
+                        icon.parentElement.remove();
+                    });
+                });
+                /*]]>*/
+            </script>
+
+</body>
+</html>

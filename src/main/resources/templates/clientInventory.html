@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wholesale Store Inventory</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional: link to external CSS for styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        nav {
+            background-color: #007BFF;
+            padding: 10px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+
+        .low-stock {
+            background-color: #ffcccc; /* Light red to highlight low stock */
+        }
+
+        .reorder-btn, .delete-btn, .update-btn, .add-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+            margin: 5px;
+        }
+
+        .reorder-btn:hover, .delete-btn:hover, .update-btn:hover, .add-btn:hover {
+            background-color: #218838;
+        }
+
+        .form-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="#orders">Orders</a>
+            <a href="#customers">Customers</a>
+            <a href="#employees">Employees</a>
+        </nav>
+        <h1>Wholesale Store Inventory</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Stock Amount</th>
+                    <th>Manufacturer</th>
+                    <th>Contact Info</th>
+                    <th>Action</th> <!-- Added Action column for reorder button -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Product A</td>
+                    <td>50</td>
+                    <td>Manufacturer X</td>
+                    <td>contact@manufacturerx.com</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Product B</td>
+                    <td>30</td>
+                    <td>Manufacturer Y</td>
+                    <td>contact@manufacturery.com</td>
+                    <td></td>
+                </tr>
+                <tr class="low-stock">
+                    <td>Product C</td>
+                    <td>10</td> <!-- Low stock example -->
+                    <td>Manufacturer Z</td>
+                    <td>contact@manufacturerz.com</td>
+                    <td><button class="reorder-btn" onclick="alert('Reorder placed for Product C')">Place Reorder</button></td>
+                </tr>
+                <tr class="low-stock">
+                    <td>Product D</td>
+                    <td>5</td> <!-- Low stock example -->
+                    <td>Manufacturer X</td>
+                    <td>contact@manufacturerx.com</td>
+                    <td><button class="reorder-btn" onclick="alert('Reorder placed for Product D')">Place Reorder</button></td>
+                </tr>
+                <tr>
+                    <td>Product E</td>
+                    <td>60</td>
+                    <td>Manufacturer Y</td>
+                    <td>contact@manufacturery.com</td>
+                    <td></td>
+                </tr>
+                <tr class="low-stock">
+                    <td>Product F</td>
+                    <td>15</td> <!-- Low stock example -->
+                    <td>Manufacturer Z</td>
+                    <td>contact@manufacturerz.com</td>
+                    <td><button class="reorder-btn" onclick="alert('Reorder placed for Product F')">Place Reorder</button></td>
+                </tr>
+            </tbody>
+        </table>
+       
+    </div>
+    <div class="container">
+      
+        <!-- Form for Adding a New Product -->
+        <div class="form-container">
+            <h2>Add New Category</h2>
+            <input type="text" id="categorytName" placeholder="Category Name" required>
+            <input type="text" id="producttName" placeholder="Product Name" required>
+            <input type="number" id="stockQuantity" placeholder="Stock Quantity" required>
+            <input type="text" id="manufacturerName" placeholder="Manufacturer Name" required>
+            <input type="text" id="contactInfo" placeholder="Contact Info" required>
+            <button class="add-btn" onclick="addProduct()">Add Product</button>
+        </div>
+
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Stock Amount</th>
+                    <th>Manufacturer</th>
+                    <th>Contact Info</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.productName}">Product Name</td>
+                    <td th:text="${product.stockQuantity}">Stock Amount</td>
+                    <td th:text="${product.categoryName}">Manufacturer</td>
+                    <td th:text="'contact@' + ${product.categoryName.toLowerCase() + '.com'}">Contact Info</td>
+                    <td>
+                        <button class="reorder-btn" th:onclick="'placeReorder(' + ${product.productName} + ')'">Place Reorder</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>        
+
+        <div class="footer">
+            <p>&copy; 2024 Wholesale Store Inventory. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- Optional: Include JavaScript -->
+    <script>
+        // Fetch products and populate the table
+        async function fetchProducts() {
+            const response = await fetch('/api/products'); // Adjust the URL according to your endpoint
+            const products = await response.json();
+            const tableBody = document.querySelector('#productsTable tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.productName}</td>
+                    <td>${product.stockQuantity}</td>
+                    <td>${product.manufacturers.map(m => m.manufacturerName).join(', ')}</td>
+                    <td>${product.contactInfo}</td>
+                    <td>
+                        <button class="update-btn" onclick="updateProduct(${product.productId})">Update</button>
+                        <button class="delete-btn" onclick="deleteProduct(${product.productId})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Add a new product
+        async function addProduct() {
+            const productName = document.getElementById('productName').value;
+            const stockQuantity = document.getElementById('stockQuantity').value;
+            const manufacturerName = document.getElementById('manufacturerName').value;
+            const contactInfo = document.getElementById('contactInfo').value;
+
+            const product = { 
+                productName, 
+                stockQuantity: parseInt(stockQuantity), 
+                manufacturers: [{ manufacturerName, contactInfo }] 
+            };
+
+            await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(product)
+            });
+
+            // Clear the input fields
+            document.getElementById('productName').value = '';
+            document.getElementById('stockQuantity').value = '';
+            document.getElementById('manufacturerName').value = '';
+            document.getElementById('contactInfo').value = '';
+
+            fetchProducts(); // Refresh the product list
+        }
+
+        // Delete a product
+        async function deleteProduct(productId) {
+            await fetch(`/api/products/${productId}`, {
+                method: 'DELETE'
+            });
+            fetchProducts(); // Refresh the product list
+        }
+
+        // Update a product (Placeholder for the actual update functionality)
+        async function updateProduct(productId) {
+            // Here, you can implement the functionality to show the existing product details
+            // and allow the user to update them. You might need to fetch the product details
+            // and populate a form similar to the Add Product form.
+            alert('Update functionality to be implemented for product ID: ' + productId);
+        }
+
+        // Initial fetch of products
+        window.onload = fetchProducts;
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Admin - Update Customer Order')}"></head>
+<body data-bs-theme="dark">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/header :: sidebar}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container justify-content-center align-content-center ">
+                        <div class="row">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                <h1>Order Shipping Details</h1>
+                            </div>
+                        </div>
+                        <form action="" th:object="${manufacturerOrder}">
+                            <div class="mb-3">
+                                <label for="manufacturer" class="form-label">Manufacturer</label>
+                                <input type="text" class="form-control" id="manufacturer" th:value="${manufacturerOrder.manufacturer.manufacturerName}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="orderDate" class="form-label">Order Date</label>
+                                <input type="date" class="form-control" id="orderDate" th:field="*{dateOfOrder}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="processedByEmployee" class="form-label">Processed by Employee</label>
+                                <input type="text" class="form-control" id="processedByEmployee" th:value="${manufacturerOrder.processedByEmployee.firstName} + ' ' + ${manufacturerOrder.processedByEmployee.lastName}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Products</label>
+                                <div id="productList">
+                                    <div th:each="productPair : ${manufacturerOrder.products}">
+                                        <div class="input-group mb-2 align-items-center justify-content-center">
+                                            <input type="text" class="form-control" placeholder="Product Name" name="productIds" th:value="${productPair.getfirst().productName}" disabled>
+                                            <input type="number" class="form-control" placeholder="Quantity" name="quantities" th:value="${productPair.getsecond()}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <form th:action="@{/admin/orders/manufacturer/shipping/update?id={id}(id=${shippingInfo.shippingInfoId})}" method="post" th:object="${shippingInfo}">
+                            <input type="hidden" name="orderId" th:value="${manufacturerOrder.orderId}">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" th:field="*{status}">
+                                    <option value="SHIPPED">SHIPPED</option>
+                                    <option value="ARRIVED">ARRIVED</option>
+                                    <option value="PENDING">PENDING</option>
+                                    <option value="CANCELLED">CANCELLED</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="shippingDate" class="form-label">Shipping Date</label>
+                                <input type="date" class="form-control" id="shippingDate" th:field="*{shippingDate}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="expectedDeliveryDate" class="form-label">Expected Delivery Date</label>
+                                <input type="date" class="form-control" id="expectedDeliveryDate" th:field="*{expectedDeliveryDate}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Shipping Info</button>
+                        </form>
+                    </div>
+            </main>
+
+        </div>
+    </div>
+
+
+    <script>
+         function getDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+
+            if (document.getElementById('shippingDate').value == '') {
+                document.getElementById('shippingDate').value = today;
+            }
+
+            var expectedDeliveryDate = new Date();
+            expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
+            dd = String(expectedDeliveryDate.getDate()).padStart(2, '0');
+            mm = String(expectedDeliveryDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+            yyyy = expectedDeliveryDate.getFullYear();
+
+            expectedDeliveryDate = yyyy + '-' + mm + '-' + dd;
+
+            if (document.getElementById('expectedDeliveryDate').value == '') {
+                document.getElementById('expectedDeliveryDate').value = expectedDeliveryDate;
+            }
+        }
+
+        window.onload = getDate;
+    </script>
+
+</body>
+</html>

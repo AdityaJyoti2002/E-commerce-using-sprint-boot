@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/header :: header(title='Admin - Add Customer')}"></head>
+<body data-bs-theme="dark">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/header :: sidebar}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container justify-content-center align-content-center ">
+                        <div class="row">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                <h1>Add New Customer</h1>
+                            </div>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                        <form th:action="@{/admin/customers/create}" method="post" th:object="${customer}">
+                            <div class="mb-3">
+                                <label for="emailId" class="form-label">Email ID</label>
+                                <input type="email" class="form-control" id="emailId" th:field="*{emailId}" name="emailId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">GetFirst() Name</label>
+                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" name="firstName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" name="lastName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" th:field="*{phoneNumber}" name="phoneNumber" required pattern="[0-9]{10}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="shippingAddress" class="form-label">Shipping Address</label>
+                                <input type="text" class="form-control" id="shippingAddress" th:field="*{shippingAddress}" name="shippingAddress" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="billingAddress" class="form-label">Billing Address</label>
+                                <input type="text" class="form-control" id="billingAddress" th:field="*{billingAddress}" name="billingAddress" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Customer</button>
+                        </form>
+                    </div>
+            </main>
+
+</body>
+</html>

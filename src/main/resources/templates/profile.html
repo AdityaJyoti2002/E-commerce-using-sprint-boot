@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Profile</title>
+    <style>
+        /* Basic layout for the sidebar and content */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text color */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #333; /* Dark navbar background */
+            padding: 10px 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Ensure it stays above other elements */
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #1f1f1f; /* Darker sidebar */
+            padding: 20px;
+            position: fixed;
+            top: 60px; /* Leave space for the fixed navbar */
+            left: 0;
+            height: calc(100% - 60px); /* Full height minus navbar */
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+            color: #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #333; /* Hover effect */
+        }
+
+        /* Content area styles */
+        .content {
+            margin-left: 270px; /* Offset for the sidebar */
+            margin-top: 60px; /* Space for the navbar */
+            padding: 30px;
+            width: calc(100% - 270px);
+            box-sizing: border-box;
+        }
+
+        /* Title styling */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        /* Form styling */
+        label {
+            color: #ddd;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #888;
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Hidden class for switching between view and edit modes */
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        // JavaScript function to toggle between view and edit modes
+        function toggleEditMode() {
+            document.getElementById("viewMode").classList.toggle("hidden");
+            document.getElementById("editMode").classList.toggle("hidden");
+        }
+    </script>
+</head>
+<body>
+
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Account</h2>
+        <a href="/profile">Your Account</a>
+        <a href="/orders">Track Your Orders</a>
+        <a href="/customer-help">Customer Help</a>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+        <h1>Customer Profile</h1>
+
+        <!-- View Mode (Initial display) -->
+        <div id="viewMode">
+            <p><strong>GetFirst() Name:</strong> <span th:text="${customer.firstName}"></span></p>
+            <p><strong>Last Name:</strong> <span th:text="${customer.lastName}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${customer.emailId}"></span></p>
+            <p><strong>Phone Number:</strong> <span th:text="${customer.phoneNumber}"></span></p>
+            <p><strong>Shipping Address:</strong> <span th:text="${customer.shippingAddress}"></span></p>
+            <p><strong>Billing Address:</strong> <span th:text="${customer.billingAddress}"></span></p>
+
+            <!-- Button to toggle edit mode -->
+            <button onclick="toggleEditMode()">Update Profile</button>
+        </div>
+
+        <!-- Edit Mode (Form fields for editing) -->
+        <div id="editMode" class="hidden">
+            <form th:action="@{/profile/update}" th:object="${customer}" method="post">
+                <div>
+                    <label>GetFirst() Name:</label>
+                    <input type="text" th:field="*{firstName}" required>
+                </div>
+                <div>
+                    <label>Last Name:</label>
+                    <input type="text" th:field="*{lastName}" required>
+                </div>
+                <div>
+                    <label>Email:</label>
+                    <input type="email" th:field="*{emailId}" readonly>
+                </div>
+                <div>
+                    <label>Phone Number:</label>
+                    <input type="text" th:field="*{phoneNumber}">
+                </div>
+                <div>
+                    <label>Shipping Address:</label>
+                    <input type="text" th:field="*{shippingAddress}">
+                </div>
+                <div>
+                    <label>Billing Address:</label>
+                    <input type="text" th:field="*{billingAddress}">
+                </div>
+                <div>
+                    <button type="submit">Submit Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
