@@ -48,7 +48,7 @@
                                         <div class="input-group mb-2 align-items-center justify-content-center">
                                             <select class="form-select" name="productIds">
                                                 <option th:each="prod : ${products}" th:value="${prod.productId}" th:text="${prod.productName}"
-                                                        th:selected="${prod.productId == productPair.getfirst().productId}"
+                                                        th:selected="${prod.productId == productPair.getFirst().productId}"
                                                 ></option>
                                             </select>
                                             <input type="number" class="form-control" placeholder="Quantity" name="quantities" th:value="${productPair.getsecond()}">

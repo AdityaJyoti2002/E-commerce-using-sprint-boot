@@ -3,6 +3,8 @@ package com.inventory.backend.services.impl;
 import com.inventory.backend.dao.impl.ProductDao;
 import com.inventory.backend.entities.Product;
 import com.inventory.backend.services.IModelService;
+import com.inventory.backend.entities.Category;
+
 
 import java.util.List;
 import java.util.Map;
@@ -75,5 +77,14 @@ public class ProductService implements IModelService<Product, Long> {
     public List<Product> searchProducts(String query) {
         return productDao.searchProducts(query);
     }
+    // public Category getCategoryById(Long categoryId) {
+    public Category getCategoryById(Long categoryId) {
+        List<Product> products = productDao.getByCategory(categoryId);
+        if (!products.isEmpty() && products.get(0).getCategory() != null) {
+            return products.get(0).getCategory();
+        }
+        return null;
+    }
+    
     
 }

@@ -1,100 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="~{fragments/header :: header(title='Cart')}"></head>
-<body data-bs-theme="dark">
+<head th:replace="~{fragments/header :: header(title='Cart')}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-100 min-h-screen text-gray-900">
+
+    <!-- Navbar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-    <div class="container mt-5 justify-content-center align-items-center">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Cart</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped table-dark">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Added On</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:if="${#lists.isEmpty(cart.products)}">
-                                    <td colspan="6" class="text-center">
-                                        Your cart is empty! <a href="/" class="btn btn-link">Shop Now</a>
-                                    </td>
-                                </tr>
-                                <tr th:each="cartItem : ${cart.products}">
-                                    <td th:text="${cartItem.getLeft().productName}"></td>
-                                    <td>
-                                        ₹
-                                        <span th:text="${cartItem.getLeft().sellingPrice}" class="me-2"></span>
-                                        <span class="text-decoration-line-through" th:text="${cartItem.getLeft().maximumRetailPrice}"></span>
-                                    </td>
-                                    <td>
-                                        <form th:action="@{/cart/update}" method="post" th:name="update + ${cartItem.getLeft().productId}">
-                                            <input type="number" th:value="${cart.cartId}" name="cartId" class="form-control" hidden>
-                                            <input type="number" th:value="${cartItem.getLeft().productId}" name="productId" class="form-control" hidden>
-                                            <input type="number" th:value="${cartItem.getMiddle()}" class="form-control" min="1" th:max="${cartItem.getLeft().stockQuantity}" name="quantity" th:id="quantity + ${cartItem.getLeft().productId}">
-                                        </form>
-                                    </td>
-                                    <td th:text="${cartItem.getRight()}"></td>
-                                    <td th:text="'₹' + ${(cartItem.getLeft().sellingPrice * cartItem.getMiddle())}"></td>
-                                    <td>
-                                        <form th:action="@{/cart/remove}" method="post">
-                                            <input type="number" th:value="${cart.cartId}" name="cartId" class="form-control" hidden>
-                                            <input type="number" th:value="${cartItem.getLeft().productId}" name="productId" class="form-control" hidden>
-                                            <button type="submit" class="btn btn-danger">Remove</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="d-flex justify-content-between">
-                            <a href="#" id="checkoutButton" class="btn btn-primary">Checkout</a>
-                            <span id="total"></span>
-                        </div>
-                    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto p-4">
+
+        <!-- Cart Message -->
+        <div th:if="${#lists.isEmpty(cart.products)}" class="text-center bg-yellow-200 text-yellow-800 py-4 rounded mb-6">
+            Your cart is empty! <a href="/" class="underline text-green-700">Shop Now</a>
+        </div>
+
+        <!-- Cart Card -->
+        <div class="bg-white shadow-lg rounded-lg overflow-x-auto hover:shadow-2xl transition-shadow duration-300">
+            
+            <!-- Card Header -->
+            <div class="bg-green-600 text-white p-4 rounded-t-lg">
+                <h2 class="text-xl font-bold">Cart</h2>
+            </div>
+
+            <!-- Cart Table -->
+            <div class="p-4 overflow-x-auto">
+                <table class="min-w-full table-auto border-collapse">
+                    <thead>
+                        <tr class="bg-green-200 text-gray-800">
+                            <th class="px-4 py-2 text-left">Product</th>
+                            <th class="px-4 py-2 text-left">Price</th>
+                            <th class="px-4 py-2 text-left">Quantity</th>
+                            <th class="px-4 py-2 text-left">Added On</th>
+                            <th class="px-4 py-2 text-left">Total</th>
+                            <th class="px-4 py-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cartItem : ${cart.products}" class="border-b hover:bg-green-50 transition">
+                            <td class="px-4 py-2" th:text="${cartItem.getLeft().productName}"></td>
+                            <td class="px-4 py-2">
+                                ₹<span th:text="${cartItem.getLeft().sellingPrice}"></span> 
+                                <span class="line-through text-gray-500 ml-2" th:text="${cartItem.getLeft().maximumRetailPrice}"></span>
+                            </td>
+                            <td class="px-4 py-2">
+                                <form th:action="@{/cart/update}" method="post" th:name="'update' + ${cartItem.getLeft().productId}">
+                                    <input type="hidden" th:value="${cart.cartId}" name="cartId">
+                                    <input type="hidden" th:value="${cartItem.getLeft().productId}" name="productId">
+                                    <input type="number" th:value="${cartItem.getMiddle()}" min="1" th:max="${cartItem.getLeft().stockQuantity}" name="quantity"
+                                           th:id="'quantity' + ${cartItem.getLeft().productId}" 
+                                           class="w-20 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-green-600">
+                                </form>
+                            </td>
+                            <td class="px-4 py-2" th:text="${cartItem.getRight()}"></td>
+                            <td class="px-4 py-2" th:text="'₹' + ${(cartItem.getLeft().sellingPrice * cartItem.getMiddle())}"></td>
+                            <td class="px-4 py-2">
+                                <form th:action="@{/cart/remove}" method="post">
+                                    <input type="hidden" th:value="${cart.cartId}" name="cartId">
+                                    <input type="hidden" th:value="${cartItem.getLeft().productId}" name="productId">
+                                    <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                        Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Total and Checkout -->
+                <div class="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
+                    <span id="total" class="text-lg font-bold text-gray-800"></span>
+                    <a href="#" id="checkoutButton" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Checkout</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to calculate the total amount of the cart
+        // Calculate total
         function calculateTotal() {
-            const totalCells = document.querySelectorAll('td:nth-child(5)'); // This selects the "Total" column cells
+            const totalCells = document.querySelectorAll('td:nth-child(5)');
             let sum = 0;
-            
-            // Sum up all the values in the "Total" column
             totalCells.forEach(t => {
-                sum += parseFloat(t.innerText.replace('₹', '')); // Remove dollar sign and parse as number
+                sum += parseFloat(t.innerText.replace('₹', ''));
             });
-
-            // Display the total in the "Total" span
             document.getElementById('total').innerText = "Total: ₹" + sum.toFixed(2);
-
-            // Get the checkout button and update its href with the calculated total amount
             const checkoutButton = document.getElementById('checkoutButton');
             checkoutButton.href = "/checkout?totalAmount=" + sum.toFixed(2) + "&cartId=" + document.querySelector('input[name="cartId"]').value;
         }
 
+        // Submit quantity change
         document.querySelectorAll('input[name="quantity"]').forEach(input => {
-                                input.addEventListener('change', function() {
-                                    const id = input.id.replace('quantity', '');
-                                    console.log(id);
-                                    if (input.value == '') {
-                                        return;
-                                    }
-                                    document.forms['update' + id].submit();
-                                });
-                            });
+            input.addEventListener('change', function() {
+                const id = input.id.replace('quantity', '');
+                if (input.value === '') return;
+                document.forms['update' + id].submit();
+            });
+        });
 
-        // Call the calculateTotal function when the page loads
         calculateTotal();
     </script>
 </body>

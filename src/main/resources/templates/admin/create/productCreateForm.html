@@ -45,18 +45,41 @@
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">Category</label>
-                                <select class="form-select" id="categoryId" name="categoryId" required>
-                                    <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+                                <select class="form-select" id="categoryId" name="categoryId" required
+                                        th:disabled="${#lists.isEmpty(categories)}">
+                                    <!-- Placeholder if no categories -->
+                                    <option th:if="${#lists.isEmpty(categories)}" disabled>No categories available</option>
+                            
+                                    <!-- Loop through categories -->
+                                    <option th:each="category : ${categories}" 
+                                            th:value="${category.categoryId}" 
+                                            th:text="${category.categoryName}">
+                                    </option>
                                 </select>
                             </div>
+                            
+                            <!-- Manufacturer + Cost Price Section -->
                             <div class="mb-3">
+                                <label class="form-label">Manufacturers</label>
                                 <div id="manufacturersList">
-                                    <div class="input-group mb-2 align-items-center justify-content-center">
-                                        <select class="form-select" name="manufacturerIds">
-                                            <option th:each="manufacturer : ${manufacturers}" th:value="${manufacturer.manufacturerId}" th:text="${manufacturer.manufacturerName}"></option>
+                                    <div class="input-group mb-2 align-items-center justify-content-center" 
+                                         th:each="manufacturer : ${manufacturers}">
+                                        <select class="form-select" name="manufacturerIds"
+                                                th:disabled="${#lists.isEmpty(manufacturers)}">
+                                            <!-- Placeholder if no manufacturers -->
+                                            <option th:if="${#lists.isEmpty(manufacturers)}" disabled>No manufacturers available</option>
+                            
+                                            <!-- Loop through manufacturers -->
+                                            <option th:each="m : ${manufacturers}" 
+                                                    th:value="${m.manufacturerId}" 
+                                                    th:text="${m.manufacturerName}">
+                                            </option>
                                         </select>
-                                        <input type="number" class="form-control" placeholder="Cost Price" name="costPrices">
-                                        <i class="bi bi-x-circle-fill text-danger ms-1"></i>
+                                        <input type="number" class="form-control" placeholder="Cost Price" name="costPrices" min="0">
+                                        <button type="button" class="btn btn-outline-danger ms-1 remove-manufacturer" 
+                                                title="Remove Manufacturer">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-primary mt-1" id="addManufacturer">Add Manufacturer</button>

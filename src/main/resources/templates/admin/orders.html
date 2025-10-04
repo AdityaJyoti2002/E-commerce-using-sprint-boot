@@ -83,7 +83,7 @@
                                 <td>
                                     <ul>
                                         <li th:each="product : ${order.products}">
-                                            <span th:text="${product.getsecond()} + ' x ' + ${product.getfirst().productName}"></span>
+                                            <span th:text="${product.getSecond()} + ' x ' + ${product.getFirst().productName}"></span>
                                         </li>
                                     </ul>
                                 </td>
@@ -98,8 +98,7 @@
                                     </button>
                                     <a title="Shipping" class="btn btn-warning" th:href="@{'/admin/orders/customer/shipping?id=' + ${order.orderId}}">
                                         <i class="bi bi-truck"></i>    
-                                    </a>
-                                </td>
+                                    </a>                                </td>
                             </tr>
                         </tbody>
                     </table> 
@@ -158,7 +157,7 @@
                             <td>
                                 <ul>
                                     <li th:each="product : ${order.products}">
-                                        <span th:text="${product.getsecond()} + ' x ' + ${product.getfirst().productName}"></span>
+                                        <span th:text="${product.getSecond()} + ' x ' + ${product.getFirst().productName}"></span>
                                     </li>
                                 </ul>
                             </td>

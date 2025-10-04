@@ -36,14 +36,18 @@ public class ProductController {
     public String showProductDetails(@PathVariable("id") Long id, Model model) {
         Optional<Product> productOptional = productService.findById(id);
         System.out.println(productOptional);
+        System.out.println("Requested Product ID: " + id);
+        System.out.println("Found Product: " + productOptional);
         // If product is found, show details page
         if (productOptional.isPresent()) {
             model.addAttribute("product", productOptional.get());
             model.addAttribute("products", productService.getByCategory(productOptional.get().getCategory().getCategoryId(), 4));
             return "product-details"; // Thymeleaf template name (product-details.html)
         } else {
+            
             // Redirect to notfound.html if product not found
             return "redirect:/notfound";
+            // return "product-details"; 
         }
     }
 
@@ -81,5 +85,13 @@ public class ProductController {
     public String search(@RequestParam("query") String query, Model model) {
         model.addAttribute("products", productService.searchProducts(query));
         return "search";
+    }
+
+    @GetMapping("/all-products")
+    public String getAllProducts(Model model) {
+
+        model.addAttribute("products", productService.findAll());
+        System.out.println("Products size: " + productService.findAll()); // sab products list bhej do
+        return "allproduct"; // templates/allproduct.html
     }
 }

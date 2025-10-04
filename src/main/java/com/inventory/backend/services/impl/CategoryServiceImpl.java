@@ -44,5 +44,9 @@ public class CategoryServiceImpl implements IModelService<Category, Long> {
     public void delete(Long id) {
         categoryDao.delete(id);
     }
+
+    public Category getCategoryById(Long id) {
+        return categoryDao.findById(id).orElse(null);
+    }
     
 }

@@ -18,20 +18,39 @@ public class CategoryProductsController {
         this.productService = productService;
     }
 
+    // @GetMapping("/category/{categoryId}/products")
+    // public String getProductsByCategory(@PathVariable Long categoryId, Model model) {
+
+    //     List<Product> products = productService.getByCategory(categoryId);
+
+    //     if(products.isEmpty()) {
+    //         return "notfound";
+    //     }
+
+    //     model.addAttribute("products", products);
+    //     model.addAttribute("category", products.get(0).getCategory());
+
+    //     return "category-products";
+    // }
     @GetMapping("/category/{categoryId}/products")
     public String getProductsByCategory(@PathVariable Long categoryId, Model model) {
-
         List<Product> products = productService.getByCategory(categoryId);
-
-        if(products.isEmpty()) {
+    
+        if (products.isEmpty()) {
             return "notfound";
         }
-
+    
+        var category = products.get(0).getCategory();
+        if (category == null) {
+            category = productService.getCategoryById(categoryId);
+        }
+    
         model.addAttribute("products", products);
-        model.addAttribute("category", products.get(0).getCategory());
-
+        model.addAttribute("category", category);
+    
         return "category-products";
     }
-
+    
+    
 
 }

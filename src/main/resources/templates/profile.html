@@ -2,127 +2,127 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Customer Profile</title>
+    <title>Customer Dashboard</title>
     <style>
-        /* Basic layout for the sidebar and content */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212; /* Dark background */
-            color: #e0e0e0; /* Light text color */
+            background-color: #f0f2f5;
             margin: 0;
             padding: 0;
+            display: flex;
+            height: 100vh;
         }
 
-        /* Navbar styles */
-        .navbar {
-            background-color: #333; /* Dark navbar background */
-            padding: 10px 20px;
-            text-align: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000; /* Ensure it stays above other elements */
-        }
-
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            margin: 0 10px;
-            font-size: 1.2rem;
-            transition: background-color 0.3s;
-        }
-
-        .navbar a:hover {
-            background-color: #555;
-        }
-
-        /* Sidebar styles */
+        /* Sidebar */
         .sidebar {
-            width: 250px;
-            background-color: #1f1f1f; /* Darker sidebar */
-            padding: 20px;
-            position: fixed;
-            top: 60px; /* Leave space for the fixed navbar */
-            left: 0;
-            height: calc(100% - 60px); /* Full height minus navbar */
-            color: #fff;
-            box-sizing: border-box;
+            width: 220px;
+            background-color: #28a745;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding-top: 30px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
         }
 
         .sidebar a {
-            display: block;
-            padding: 12px;
+            color: white;
             text-decoration: none;
-            color: #ddd;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            padding: 15px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: background 0.3s;
         }
 
         .sidebar a:hover {
-            background-color: #333; /* Hover effect */
+            background-color: #218838;
         }
 
-        /* Content area styles */
-        .content {
-            margin-left: 270px; /* Offset for the sidebar */
-            margin-top: 60px; /* Space for the navbar */
+        /* Main content */
+        .main-content {
+            flex: 1;
             padding: 30px;
-            width: calc(100% - 270px);
-            box-sizing: border-box;
+            overflow-y: auto;
         }
 
-        /* Title styling */
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            color: #fff;
+        .card {
+            background: #fff;
+            max-width: 700px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
         }
 
-        /* Form styling */
+        .card-header {
+            background-color: #28a745;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            color: white;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+
+        strong {
+            color: #333;
+        }
+
         label {
-            color: #ddd;
             font-weight: bold;
+            color: #333;
         }
 
         input {
             width: 100%;
             padding: 12px;
-            margin: 12px 0;
-            border: 1px solid #444;
-            background-color: #333;
-            color: #fff;
-            border-radius: 5px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+            font-size: 1rem;
         }
 
         input:focus {
             outline: none;
-            border-color: #888;
+            border-color: #28a745;
+            box-shadow: 0 0 5px #28a745;
         }
 
         button {
-            padding: 12px 18px;
-            background-color: #007bff;
-            color: #fff;
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background: #218838;
         }
 
-        /* Hidden class for switching between view and edit modes */
         .hidden {
             display: none;
         }
     </style>
+
     <script>
-        // JavaScript function to toggle between view and edit modes
         function toggleEditMode() {
             document.getElementById("viewMode").classList.toggle("hidden");
             document.getElementById("editMode").classList.toggle("hidden");
@@ -130,64 +130,57 @@
     </script>
 </head>
 <body>
-
-    
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Account</h2>
-        <a href="/profile">Your Account</a>
-        <a href="/orders">Track Your Orders</a>
-        <a href="/customer-help">Customer Help</a>
+        <h2> user Dashboard</h2>
+        <a href="/profile">Profile</a>
+        <a href="/orders">Orders</a>
+ 
+        <a href="/">Logout</a>
     </div>
 
-    <!-- Content Area -->
-    <div class="content">
-        <h1>Customer Profile</h1>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">
+                <h2>Customer Profile</h2>
+            </div>
 
-        <!-- View Mode (Initial display) -->
-        <div id="viewMode">
-            <p><strong>GetFirst() Name:</strong> <span th:text="${customer.firstName}"></span></p>
-            <p><strong>Last Name:</strong> <span th:text="${customer.lastName}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${customer.emailId}"></span></p>
-            <p><strong>Phone Number:</strong> <span th:text="${customer.phoneNumber}"></span></p>
-            <p><strong>Shipping Address:</strong> <span th:text="${customer.shippingAddress}"></span></p>
-            <p><strong>Billing Address:</strong> <span th:text="${customer.billingAddress}"></span></p>
+            <!-- View Mode -->
+            <div id="viewMode">
+                <p><strong>First Name:</strong> <span th:text="${customer.firstName}"></span></p>
+                <p><strong>Last Name:</strong> <span th:text="${customer.lastName}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${customer.emailId}"></span></p>
+                <p><strong>Phone Number:</strong> <span th:text="${customer.phoneNumber}"></span></p>
+                <p><strong>Shipping Address:</strong> <span th:text="${customer.shippingAddress}"></span></p>
+                <p><strong>Billing Address:</strong> <span th:text="${customer.billingAddress}"></span></p>
+                <button onclick="toggleEditMode()">Update Profile</button>
+            </div>
 
-            <!-- Button to toggle edit mode -->
-            <button onclick="toggleEditMode()">Update Profile</button>
-        </div>
-
-        <!-- Edit Mode (Form fields for editing) -->
-        <div id="editMode" class="hidden">
-            <form th:action="@{/profile/update}" th:object="${customer}" method="post">
-                <div>
-                    <label>GetFirst() Name:</label>
+            <!-- Edit Mode -->
+            <div id="editMode" class="hidden">
+                <form th:action="@{/profile/update}" th:object="${customer}" method="post">
+                    <label>First Name:</label>
                     <input type="text" th:field="*{firstName}" required>
-                </div>
-                <div>
+
                     <label>Last Name:</label>
                     <input type="text" th:field="*{lastName}" required>
-                </div>
-                <div>
+
                     <label>Email:</label>
                     <input type="email" th:field="*{emailId}" readonly>
-                </div>
-                <div>
+
                     <label>Phone Number:</label>
                     <input type="text" th:field="*{phoneNumber}">
-                </div>
-                <div>
+
                     <label>Shipping Address:</label>
                     <input type="text" th:field="*{shippingAddress}">
-                </div>
-                <div>
+
                     <label>Billing Address:</label>
                     <input type="text" th:field="*{billingAddress}">
-                </div>
-                <div>
+
                     <button type="submit">Submit Changes</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </body>

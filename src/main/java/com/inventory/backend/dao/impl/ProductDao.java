@@ -54,18 +54,47 @@ public class ProductDao implements IDao<Product, Long> {
     }
 
     @Override
+    // public Optional<Product> findById(Long id) {
+    //     String sql = "SELECT p.*, c.*, m.*, pm.cost_price FROM products p JOIN categories c ON p.category_id = c.category_id JOIN product_manufacturers pm ON p.product_id = pm.product_id JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id WHERE p.product_id = ?";
+    //     Map<Long, Product> productMap = jdbcTemplate.query(sql, new ProductRowMapper(), id);
+    //     return Optional.ofNullable(productMap.get(id));
+    // }
     public Optional<Product> findById(Long id) {
-        String sql = "SELECT p.*, c.*, m.*, pm.cost_price FROM products p JOIN categories c ON p.category_id = c.category_id JOIN product_manufacturers pm ON p.product_id = pm.product_id JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id WHERE p.product_id = ?";
-        Map<Long, Product> productMap = jdbcTemplate.query(sql, new ProductRowMapper(), id);
-        return Optional.ofNullable(productMap.get(id));
+    String sql = "SELECT p.*, c.*, m.*, pm.cost_price " +
+                 "FROM products p " +
+                 "LEFT JOIN categories c ON p.category_id = c.category_id " +
+                 "LEFT JOIN product_manufacturers pm ON p.product_id = pm.product_id " +
+                 "LEFT JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id " +
+                 "WHERE p.product_id = ?";
+
+    Map<Long, Product> productMap = jdbcTemplate.query(sql, new ProductRowMapper(), id);
+
+    if (productMap.isEmpty()) {
+        return Optional.empty();
     }
 
+    return Optional.of(productMap.values().iterator().next());
+}
+
+    
+
     @Override
+    // public List<Product> findAll() {
+    //     String sql = "SELECT p.*, c.*, m.*, pm.cost_price FROM products p JOIN categories c ON p.category_id = c.category_id JOIN product_manufacturers pm ON p.product_id = pm.product_id JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id";
+    //     Map<Long, Product> productMap = jdbcTemplate.query(sql, new ProductRowMapper());
+    //     return new ArrayList<>(productMap.values());
+    // }
     public List<Product> findAll() {
-        String sql = "SELECT p.*, c.*, m.*, pm.cost_price FROM products p JOIN categories c ON p.category_id = c.category_id JOIN product_manufacturers pm ON p.product_id = pm.product_id JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id";
+        String sql = "SELECT p.*, c.*, m.*, pm.cost_price " +
+                     "FROM products p " +
+                     "LEFT JOIN categories c ON p.category_id = c.category_id " +
+                     "LEFT JOIN product_manufacturers pm ON p.product_id = pm.product_id " +
+                     "LEFT JOIN manufacturers m ON pm.manufacturer_id = m.manufacturer_id";
+    
         Map<Long, Product> productMap = jdbcTemplate.query(sql, new ProductRowMapper());
         return new ArrayList<>(productMap.values());
     }
+    
 
     @Override
     public void update(Product a, Long id) {

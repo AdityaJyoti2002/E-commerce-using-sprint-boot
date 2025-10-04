@@ -26,17 +26,38 @@ public class SalesReportDao implements IDao<SalesReport, SalesReportCompositeKey
     }
 
     @Override
+    // public void create(SalesReport a) {
+    //     String sql = "INSERT INTO sales_report (day, month, year, total_sales, total_orders, top_selling_product_id) VALUES (?, ?, ?, ?, ?, ?)";
+    //     a.setTopSellingProduct(findTopSellingProduct(a.getSalesReportCompositeKey()));
+    //     jdbcTemplate.update(sql,
+    //             a.getSalesReportCompositeKey().getDay(),
+    //             a.getSalesReportCompositeKey().getMonth(),
+    //             a.getSalesReportCompositeKey().getYear(),
+    //             a.getTotalSales(),
+    //             a.getTotalOrders(),
+    //             a.getTopSellingProduct().getProductId());
+    // }
     public void create(SalesReport a) {
-        String sql = "INSERT INTO sales_report (day, month, year, total_sales, total_orders, top_selling_product_id) VALUES (?, ?, ?, ?, ?, ?)";
-        a.setTopSellingProduct(findTopSellingProduct(a.getSalesReportCompositeKey()));
+        // Find top selling product (may return null)
+        Product topProduct = findTopSellingProduct(a.getSalesReportCompositeKey());
+    
+        // Set top selling product if exists
+        a.setTopSellingProduct(topProduct);
+    
+        String sql = "INSERT INTO sales_report " +
+                     "(day, month, year, total_sales, total_orders, top_selling_product_id) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+    
         jdbcTemplate.update(sql,
                 a.getSalesReportCompositeKey().getDay(),
                 a.getSalesReportCompositeKey().getMonth(),
                 a.getSalesReportCompositeKey().getYear(),
                 a.getTotalSales(),
                 a.getTotalOrders(),
-                a.getTopSellingProduct().getProductId());
+                topProduct != null ? topProduct.getProductId() : null // <-- safe handling
+        );
     }
+    
 
     private Product findTopSellingProduct(SalesReportCompositeKey key) {
         String sql = "SELECT p.*, c.*, m.*, pm.cost_price FROM products p " +
@@ -74,17 +95,43 @@ public class SalesReportDao implements IDao<SalesReport, SalesReportCompositeKey
     }
 
     @Override
+    // public void update(SalesReport a, SalesReportCompositeKey id) {
+    //     String sql = "UPDATE sales_report SET total_sales = ?, total_orders = ?, top_selling_product_id = ? WHERE day = ? AND month = ? AND year = ?";
+    //     a.setTopSellingProduct(findTopSellingProduct(id));
+    //     jdbcTemplate.update(sql,
+    //             a.getTotalSales(),
+    //             a.getTotalOrders(),
+    //             a.getTopSellingProduct().getProductId(),
+    //             id.getDay(),
+    //             id.getMonth(),
+    //             id.getYear());
+    // }
     public void update(SalesReport a, SalesReportCompositeKey id) {
-        String sql = "UPDATE sales_report SET total_sales = ?, total_orders = ?, top_selling_product_id = ? WHERE day = ? AND month = ? AND year = ?";
-        a.setTopSellingProduct(findTopSellingProduct(id));
+        // Find top selling product (may return null)
+        Product topProduct = findTopSellingProduct(id);
+        a.setTopSellingProduct(topProduct);
+    
+        String sql = "UPDATE sales_report SET total_sales = ?, total_orders = ?, top_selling_product_id = ? " +
+                     "WHERE day = ? AND month = ? AND year = ?";
+    
         jdbcTemplate.update(sql,
                 a.getTotalSales(),
                 a.getTotalOrders(),
-                a.getTopSellingProduct().getProductId(),
+                // If product exists in DB, set its ID, otherwise null
+                (topProduct != null && productExists(topProduct.getProductId())) ? topProduct.getProductId() : null,
                 id.getDay(),
                 id.getMonth(),
-                id.getYear());
+                id.getYear()
+        );
     }
+    
+    // Helper to check if product exists in products table
+    private boolean productExists(Long productId) {
+        String sql = "SELECT COUNT(*) FROM products WHERE product_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, productId);
+        return count != null && count > 0;
+    }
+    
 
     @Override
     public void delete(SalesReportCompositeKey id) {

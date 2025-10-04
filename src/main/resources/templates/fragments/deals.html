@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="deals" class="carousel carousel-dark slide m-4" id="dealsCarousel">
-    <div class="carousel-inner">
-        <div th:each="group, stat : ${dealGroups}"
-             th:classappend="${stat.index == 0} ? 'active'" class="carousel-item">
-            <div class="d-flex flex-row gap-2 justify-content-evenly">
-                <div th:each="product : ${group}" 
-                     th:insert="~{fragments/cards :: product_card}"
-                     th:with="productName=${product.productName},
-                              sellingPrice=${product.sellingPrice},
-                              maximumRetailPrice=${product.maximumRetailPrice},
-                              productId=${product.productId},
-                              imageUrl=${product.imageUrl}">
+<div th:fragment="deals" class="relative w-full px-6 py-8 bg-green-100 text-gray-900">
+    
+    <!-- Carousel Wrapper -->
+    <div class="overflow-hidden relative">
+        <div id="dealsSlider" class="flex transition-transform duration-700 ease-in-out">
+            <!-- Each group of products -->
+            <div th:each="group, stat : ${dealGroups}" class="w-full flex-shrink-0">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+                    
+                    <!-- Product Card -->
+                    <div th:each="product : ${group}" 
+                         th:with="productName=${product.productName},
+                                  sellingPrice=${product.sellingPrice},
+                                  maximumRetailPrice=${product.maximumRetailPrice},
+                                  productId=${product.productId},
+                                  imageUrl=${product.imageUrl}"
+                         class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transform transition border border-green-300">
+                        
+                        <img th:src="${imageUrl}" alt="Product" class="w-full h-40 object-cover">
+                        
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2" th:text="${productName}"></h3>
+                            
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-xl font-bold text-green-700" th:text="'₹' + ${sellingPrice}"></span>
+                                <span class="text-sm line-through text-gray-400" th:text="'₹' + ${maximumRetailPrice}"></span>
+                            </div>
+                            
+                            <a th:href="@{'/product/' + ${productId}}" 
+                               class="block text-center bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End Product Card -->
+                    
                 </div>
             </div>
         </div>
+
+        <!-- Controls -->
+        <button onclick="prevDeals()" class="absolute top-1/2 left-0 -translate-y-1/2 bg-green-600/70 hover:bg-green-700 p-3 rounded-full text-white">
+            ❮
+        </button>
+        <button onclick="nextDeals()" class="absolute top-1/2 right-0 -translate-y-1/2 bg-green-600/70 hover:bg-green-700 p-3 rounded-full text-white">
+            ❯
+        </button>
     </div>
 
-    <div data-bs-theme="dark">
-        <button style="height: fit-content; width: fit-content;" class="carousel-control-prev align-self-center"
-                type="button" data-bs-target="#dealsCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button style="height: fit-content; width: fit-content;" class="carousel-control-next align-self-center"
-                type="button" data-bs-target="#dealsCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
 </div>
+
+<!-- Tailwind Carousel Script -->
+<script>
+    const dealsSlider = document.getElementById("dealsSlider");
+    const dealGroups = dealsSlider.children;
+    let dealIndex = 0;
+
+    function showDealSlide(i) {
+        dealIndex = (i + dealGroups.length) % dealGroups.length;
+        dealsSlider.style.transform = `translateX(-${dealIndex * 100}%)`;
+    }
+
+    function nextDeals() {
+        showDealSlide(dealIndex + 1);
+    }
+
+    function prevDeals() {
+        showDealSlide(dealIndex - 1);
+    }
+
+    // Auto-slide every 5s
+    setInterval(nextDeals, 5000);
+</script>
 </body>
 </html>
